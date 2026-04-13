@@ -70,23 +70,4 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ${{ secrets.SSH_TARGET_DIR }}
-            # Pull latest code to get updated docker-compose.prod.yml
-            git pull origin main
-            # Log in to registry on the server (using a Personal Access Token or similar if needed)
-            # Or assume the server is already logged in or uses public images (if repository is public)
-            # If private, we might need a separate mechanism or use the GITHUB_TOKEN if possible.
-            # For simplicity, we assume the server has access or the images are public.
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
