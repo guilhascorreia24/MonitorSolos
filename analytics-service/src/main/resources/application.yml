@@ -1,0 +1,72 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: analytics-service
+
+  # Configuração do PostgreSQL (para persistir alertas)
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/smart_vineyard}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  # Configuração do JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Apenas valida o schema, não altera
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Configuração do Apache Kafka
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+    # Configurações do Consumer
+    consumer:
+      group-id: "analytics-group"
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # Ignora o header __TypeId__ do producer e deserializa para o nosso DTO
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.vineyard.analytics.model.SensorData
+
+    # Configurações do Producer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# Configuração do InfluxDB v2
+influxdb:
+  url: ${INFLUXDB_URL:http://localhost:8086}
+  token: ${INFLUXDB_ADMIN_TOKEN:analytics-token-dev}
+  org: ${INFLUXDB_ORG:vineyard}
+  bucket: ${INFLUXDB_BUCKET:vineyard_data}
+
+# Configuração do cálculo de risco de fungos
+fungal-risk:
+  # Parâmetros de ambiente
+  humidity-threshold-high: 85.0    # %
+  humidity-threshold-medium: 75.0  # %
+  temp-min: 15.0                   # °C
+  temp-max: 30.0                   # °C
+  risk-temp-min: 18.0              # °C (faixa ideal para o fungo)
+  risk-temp-max: 25.0              # °C 
+  
+  # Duração para cada nível (horas)
+  duration-critical: 6
+  duration-high: 3
+  duration-medium: 1
+
+# Logging
+logging:
+  level:
+    com.vineyard.analytics: DEBUG
+    org.springframework.kafka: INFO
+    org.hibernate.SQL: DEBUG

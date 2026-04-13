@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+  namespace: vineyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:2.0
+        ports:
+        - containerPort: 1883
+        - containerPort: 9001
+        volumeMounts:
+        - name: mosquitto-storage
+          mountPath: /mosquitto/data
+      volumes:
+      - name: mosquitto-storage
+        persistentVolumeClaim:
+          claimName: mosquitto-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  namespace: vineyard
+spec:
+  ports:
+  - name: mqtt
+    port: 1883
+  - name: ws
+    port: 9001
+  selector:
+    app: mosquitto

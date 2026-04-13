@@ -1,0 +1,23 @@
+# Environment Variables
+.env
+
+# Build outputs
+target/
+bin/
+*.class
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# Docker
+.docker/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

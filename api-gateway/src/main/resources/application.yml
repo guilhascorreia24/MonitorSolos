@@ -1,0 +1,56 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        # Rota para Device Service
+        - id: device-service
+          uri: ${DEVICE_SERVICE_URI:http://localhost:8084}
+          predicates:
+            - Path=/api/devices/**
+
+        # Rota para Alert Service
+        - id: alert-service
+          uri: ${ALERT_SERVICE_URI:http://localhost:8083}
+          predicates:
+            - Path=/api/alerts/**
+
+        # Rota para Analytics Service
+        - id: analytics-service
+          uri: ${ANALYTICS_SERVICE_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/analytics/**
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+
+# Actuator para Health Checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    com.vineyard.gateway: DEBUG

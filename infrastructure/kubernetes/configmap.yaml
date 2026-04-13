@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vineyard-config
+  namespace: vineyard
+data:
+  # Base URLs (Internal K8s DNS)
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  SPRING_DATASOURCE_URL_BASE: "jdbc:postgresql://postgres:5432/"
+  POSTGRES_DB: "smart_vineyard"
+  POSTGRES_USER: "admin"
+  
+  # InfluxDB Config
+  INFLUXDB_URL: "http://influxdb:8086"
+  INFLUXDB_ORG: "vineyard"
+  INFLUXDB_BUCKET: "vineyard_data"
+  
+  # MQTT Config
+  MQTT_SERVER_URI: "tcp://mosquitto:1883"
+  
+  # Gateway Routes
+  DEVICE_SERVICE_URL: "http://device-service:8084"
+  ALERT_SERVICE_URL: "http://alert-service:8083"
+  ANALYTICS_SERVICE_URL: "http://analytics-service:8082"
+  API_GATEWAY_URL: "http://api-gateway:8000/api"

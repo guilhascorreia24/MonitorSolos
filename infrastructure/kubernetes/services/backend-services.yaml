@@ -1,0 +1,216 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestion-service
+  namespace: vineyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingestion-service
+  template:
+    metadata:
+      labels:
+        app: ingestion-service
+    spec:
+      containers:
+      - name: ingestion-service
+        image: ingestion-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+        envFrom:
+        - configMapRef:
+            name: vineyard-config
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/smart_vineyard"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vineyard-secrets
+              key: POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingestion-service
+  namespace: vineyard
+spec:
+  ports:
+  - port: 8081
+  selector:
+    app: ingestion-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-service
+  namespace: vineyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-service
+  template:
+    metadata:
+      labels:
+        app: analytics-service
+    spec:
+      containers:
+      - name: analytics-service
+        image: analytics-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8082
+        envFrom:
+        - configMapRef:
+            name: vineyard-config
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/smart_vineyard"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vineyard-secrets
+              key: POSTGRES_PASSWORD
+        - name: INFLUXDB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: vineyard-secrets
+              key: INFLUXDB_ADMIN_TOKEN
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytics-service
+  namespace: vineyard
+spec:
+  ports:
+  - port: 8082
+  selector:
+    app: analytics-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert-service
+  namespace: vineyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alert-service
+  template:
+    metadata:
+      labels:
+        app: alert-service
+    spec:
+      containers:
+      - name: alert-service
+        image: alert-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8083
+        envFrom:
+        - configMapRef:
+            name: vineyard-config
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/smart_vineyard"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vineyard-secrets
+              key: POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alert-service
+  namespace: vineyard
+spec:
+  ports:
+  - port: 8083
+  selector:
+    app: alert-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-service
+  namespace: vineyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device-service
+  template:
+    metadata:
+      labels:
+        app: device-service
+    spec:
+      containers:
+      - name: device-service
+        image: device-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8084
+        envFrom:
+        - configMapRef:
+            name: vineyard-config
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/smart_vineyard"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vineyard-secrets
+              key: POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: device-service
+  namespace: vineyard
+spec:
+  ports:
+  - port: 8084
+  selector:
+    app: device-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqttbroker-spring
+  namespace: vineyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqttbroker-spring
+  template:
+    metadata:
+      labels:
+        app: mqttbroker-spring
+    spec:
+      containers:
+      - name: mqttbroker-spring
+        image: mqttbroker-spring:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: vineyard-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqttbroker-spring
+  namespace: vineyard
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: mqttbroker-spring

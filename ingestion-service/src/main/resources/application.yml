@@ -1,0 +1,46 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ingestion-service
+
+  # Configuração do PostgreSQL
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/smart_vineyard}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  # Configuração do JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Apenas valida o schema, não altera
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Configuração do Apache Kafka
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+    # Configurações do Consumer
+    consumer:
+      group-id: "ingestion-group"
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # Ignora o header __TypeId__ do producer (que usa com.vineyard.mqttbroker.SensorData)
+        # e deserializa sempre para o nosso SensorData local
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.vineyard.ingestion.model.SensorData
+
+# Logging
+logging:
+  level:
+    com.vineyard.ingestion: DEBUG
+    org.springframework.kafka: INFO
+    org.hibernate.SQL: DEBUG

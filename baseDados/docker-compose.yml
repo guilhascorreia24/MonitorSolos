@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # PostgreSQL for Relational Data (Users, Devices, Alerts)
+  postgres:
+    image: postgres:15-alpine
+    container_name: smart_vineyard_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: smart_vineyard
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Mount the initialization script from the ../postgres/ directory
+      - ../postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - vineyard_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d smart_vineyard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # InfluxDB for Time-Series Data (Sensor Readings)
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: smart_vineyard_influx
+    restart: unless-stopped
+    environment:
+      # Automatic setup for InfluxDB 2.x
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: password123
+      DOCKER_INFLUXDB_INIT_ORG: smart_vineyard
+      DOCKER_INFLUXDB_INIT_BUCKET: sensor_data
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: my-super-secret-auth-token
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+      - influxdb_config:/etc/influxdb2
+    networks:
+      - vineyard_net
+
+networks:
+  vineyard_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  influxdb_data:
+  influxdb_config:

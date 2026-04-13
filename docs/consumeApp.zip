@@ -1,0 +1,65 @@
+# API Gateway — Implementation Plan
+
+## Objetivo
+
+Criar o **API Gateway**, o ponto de entrada único para todos os microserviços do backend. Ele será responsável por:
+1.  **Roteamento**: Encaminhar pedidos para o serviço correto (`device`, `alert`, `analytics`).
+2.  **Unificação**: Expor todas as APIs numa única porta (**8080** ou **8000**), facilitando a integração com o frontend.
+3.  **Abstração**: Ocultar a complexidade interna dos microserviços e as suas portas individuais.
+
+## User Review Required
+
+> [!IMPORTANT]
+> O Gateway será o novo ponto de contacto principal. Proponho utilizar a porta **8000** para evitar conflitos com outros serviços que possam estar a usar a 8080.
+> 
+> As rotas planeadas:
+> - `/api/devices/**` -> `device-service` (8084)
+> - `/api/alerts/**` -> `alert-service` (8083)
+> - `/api/analytics/**` -> `analytics-service` (8082)
+
+## Proposed Changes
+
+### Novo Serviço: API Gateway
+
+```
+api-gateway/
+├── Dockerfile
+├── pom.xml
+├── src/main/java/com/vineyard/gateway/
+│   └── GatewayApplication.java           # Main class
+└── src/main/resources/
+    └── application.yml                   # Configuração de Rotas (Spring Cloud Gateway)
+```
+
+#### [NEW] `pom.xml`
+- Spring Boot 3.2.3, Java 17.
+- Dependência principal: `spring-cloud-starter-gateway`.
+
+#### [NEW] `application.yml`
+- Definição das rotas utilizando o Spring Cloud Gateway.
+- Redirecionamento baseado em prefixos de path.
+
+---
+
+### Infraestrutura Docker
+
+#### [MODIFY] [docker-compose.yml](file:///home/guilherme/repos/consumeApp/MonitorSolos/docker-compose.yml)
+- Adicionar o serviço `api-gateway`.
+- Configurar dependências (`depends_on`) para garantir que os outros serviços estão prontos.
+
+## Open Questions
+
+> [!NOTE]
+> Desejas que o Gateway também trate de autenticação nesta fase, ou apenas roteamento simples? 
+> Sugiro começar com roteamento simples para validar a arquitetura.
+
+## Verification Plan
+
+### Automated Tests
+1. **Build**: `./mvnw clean package` no diretório do gateway.
+2. **Routing Test**: 
+   - `curl http://localhost:8000/api/devices` -> Deve encaminhar para o `device-service`.
+   - `curl http://localhost:8000/api/alerts` -> Deve encaminhar para o `alert-service`.
+
+### Manual Verification
+1. Verificar os logs do Gateway para confirmar o redirecionamento dos pedidos.

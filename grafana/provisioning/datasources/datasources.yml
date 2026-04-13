@@ -1,0 +1,28 @@
+apiVersion: 1
+
+datasources:
+  # InfluxDB v2 (Flux)
+  - name: InfluxDB-Vineyard
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    jsonData:
+      version: Flux
+      organization: vineyard
+      defaultBucket: vineyard_data
+    secureJsonData:
+      token: analytics-token-dev
+    editable: true
+
+  # PostgreSQL
+  - name: Postgres-Vineyard
+    type: postgres
+    url: postgres:5432
+    user: admin
+    database: smart_vineyard
+    jsonData:
+      sslmode: 'disable'
+      postgresVersion: 1500
+    secureJsonData:
+      password: password
+    editable: true

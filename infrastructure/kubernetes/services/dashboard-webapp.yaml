@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard-webapp
+  namespace: vineyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashboard-webapp
+  template:
+    metadata:
+      labels:
+        app: dashboard-webapp
+    spec:
+      containers:
+      - name: dashboard-webapp
+        image: dashboard-webapp:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NEXT_PUBLIC_API_URL
+          value: "http://localhost:30008/api" # Assuming NodePort for API access externally
+        - name: INTERNAL_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: vineyard-config
+              key: API_GATEWAY_URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard-webapp
+  namespace: vineyard
+spec:
+  type: NodePort # External access for producer
+  ports:
+  - port: 3000
+    nodePort: 30007 # Specific port for web interface
+  selector:
+    app: dashboard-webapp
