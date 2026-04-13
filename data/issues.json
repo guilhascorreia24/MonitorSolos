@@ -1,0 +1,125 @@
+{
+    "repository": "guilhascorreia24/MonitorSolos",
+    "issues": [
+        {
+            "title": "Criar dashboard com KPIs principais",
+            "body": "## Objetivo\nPermitir ao utilizador visualizar rapidamente o estado do sistema.\n\n## Tasks\n- Criar layout base do dashboard\n- Criar componentes de KPI:\n  - Produção atual (W)\n  - Produção diária (kWh)\n  - Produção mensal (kWh)\n- Criar endpoint /stats/current\n- Integrar frontend com backend\n\n## Acceptance Criteria\n- Dashboard carrega sem erros\n- KPIs atualizam corretamente\n- UI responsiva",
+            "labels": [
+                "feature",
+                "frontend",
+                "backend",
+                "priority: high"
+            ]
+        },
+        {
+            "title": "Adicionar gráficos de produção",
+            "body": "## Description\nAdicionar visualização gráfica da produção energética.\n\n## Tasks\n- Implementar gráfico (linha ou barras)\n- Integrar dados do backend\n- Adicionar estados (loading / error)\n\n## Acceptance Criteria\n- Gráfico mostra dados corretos\n- Atualiza ao mudar período",
+            "labels": [
+                "feature",
+                "frontend"
+            ]
+        },
+        {
+            "title": "Implementar histórico com filtros (dia/semana/mês)",
+            "body": "## Description\nPermitir ao utilizador consultar dados históricos.\n\n## Tasks\n- Criar endpoint /history\n- Implementar agregação de dados\n- Criar dropdown de filtros no frontend\n\n## Acceptance Criteria\n- Utilizador consegue alternar entre períodos\n- Dados refletem corretamente o intervalo selecionado",
+            "labels": [
+                "feature",
+                "backend",
+                "frontend"
+            ]
+        },
+        {
+            "title": "Permitir exportação de dados em CSV",
+            "body": "## Description\nAdicionar funcionalidade para exportar dados.\n\n## Tasks\n- Criar endpoint /export?format=csv\n- Gerar ficheiro CSV\n- Criar botão de download\n\n## Acceptance Criteria\n- Download funciona corretamente\n- Dados exportados estão completos",
+            "labels": [
+                "enhancement",
+                "backend"
+            ]
+        },
+        {
+            "title": "Implementar alertas de produção",
+            "body": "## Description\nNotificar o utilizador quando existem problemas no sistema.\n\n## Tasks\n- Criar serviço de monitorização (cron job)\n- Definir thresholds de alerta\n- Implementar envio de notificações (email ou push)\n\n## Acceptance Criteria\n- Alertas são disparados corretamente\n- Utilizador recebe notificação",
+            "labels": [
+                "feature",
+                "backend",
+                "priority: high"
+            ]
+        },
+        {
+            "title": "Implementar deteção básica de anomalias",
+            "body": "## Description\nIdentificar automaticamente comportamentos fora do normal.\n\n## Tasks\n- Calcular média histórica\n- Comparar com produção atual\n- Gerar alerta em caso de desvio\n\n## Acceptance Criteria\n- Sistema deteta quedas anormais\n- Alertas são consistentes",
+            "labels": [
+                "feature",
+                "backend"
+            ]
+        },
+        {
+            "title": "Adicionar previsão de produção solar",
+            "body": "## Description\nEstimar produção com base em condições meteorológicas.\n\n## Tasks\n- Integrar API meteorológica\n- Criar modelo de previsão simples\n- Criar endpoint /forecast\n\n## Acceptance Criteria\n- Previsão é apresentada no dashboard\n- Dados são atualizados diariamente",
+            "labels": [
+                "feature",
+                "backend"
+            ]
+        },
+        {
+            "title": "Criar sistema de recomendações energéticas",
+            "body": "## Description\nSugerir ao utilizador quando usar energia.\n\n## Tasks\n- Detectar excesso de produção\n- Criar lógica de recomendação\n- Mostrar sugestões no frontend\n\n## Acceptance Criteria\n- Sugestões aparecem em tempo real\n- Baseadas em dados reais",
+            "labels": [
+                "enhancement",
+                "backend",
+                "frontend"
+            ]
+        },
+        {
+            "title": "Implementar monitorização de consumo",
+            "body": "## Description\nMostrar consumo energético da casa.\n\n## Tasks\n- Adicionar suporte a dados de consumo\n- Criar cálculos de auto-consumo\n- Atualizar dashboard\n\n## Acceptance Criteria\n- Produção vs consumo visível\n- Percentagem de auto-consumo calculada",
+            "labels": [
+                "feature",
+                "backend",
+                "frontend"
+            ]
+        },
+        {
+            "title": "Integrar com inversores e sistemas externos",
+            "body": "## Description\nPermitir integração com diferentes fontes de dados.\n\n## Tasks\n- Criar estrutura de adaptadores\n- Integrar pelo menos 1 API\n- Normalizar dados\n\n## Acceptance Criteria\n- Dados externos são importados corretamente\n- Sistema extensível",
+            "labels": [
+                "feature",
+                "backend"
+            ]
+        },
+        {
+            "title": "Transformar app em Progressive Web App",
+            "body": "## Description\nPermitir instalação como app mobile.\n\n## Tasks\n- Criar manifest.json\n- Implementar service worker\n- Testar offline básico\n\n## Acceptance Criteria\n- App pode ser instalada\n- Funciona offline parcialmente",
+            "labels": [
+                "enhancement",
+                "frontend"
+            ]
+        },
+        {
+            "title": "Gerar relatórios mensais automáticos",
+            "body": "## Description\nCriar relatórios com dados energéticos.\n\n## Tasks\n- Gerar PDF\n- Incluir métricas principais\n- Criar endpoint /report\n\n## Acceptance Criteria\n- PDF é gerado corretamente\n- Inclui dados relevantes",
+            "labels": [
+                "feature",
+                "backend"
+            ]
+        },
+        {
+            "title": "Calcular poupança financeira",
+            "body": "## Description\nMostrar quanto o utilizador está a poupar.\n\n## Tasks\n- Definir preço por kWh\n- Calcular poupança\n- Mostrar no dashboard\n\n## Acceptance Criteria\n- Valores são corretos\n- Atualizados automaticamente",
+            "labels": [
+                "enhancement",
+                "frontend",
+                "backend"
+            ]
+        },
+        {
+            "title": "Calcular impacto ambiental",
+            "body": "## Description\nMostrar redução de CO2.\n\n## Tasks\n- Definir fator de emissão\n- Calcular CO2 evitado\n- Mostrar equivalente (ex: árvores)\n\n## Acceptance Criteria\n- Dados visíveis no dashboard\n- Cálculo consistente",
+            "labels": [
+                "enhancement",
+                "frontend",
+                "backend"
+            ]
+        }
+    ]
+}
