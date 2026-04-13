@@ -14,6 +14,10 @@ bin/
 
 # Docker
 .docker/
+mosquitto/data/
+mosquitto/log/
+postgres_data/
+influxdb_data/
 
 # OS files
 .DS_Store
